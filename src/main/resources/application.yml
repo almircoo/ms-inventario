@@ -2,9 +2,9 @@ spring:
   application:
     name: inventario
   datasource:
-    url: jdbc:mysql://${HOST}:${PORT}/${DATABASE}
-    username: ${USER}
-    password: ${PASSWORD}
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?sslMode=REQUIRED&serverTimezone=UTC
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
