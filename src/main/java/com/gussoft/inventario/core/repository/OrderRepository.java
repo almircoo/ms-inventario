@@ -14,6 +14,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
+  @Query("SELECT o FROM Order o JOIN o.cliente c WHERE c.userId = :userId")
+  Page<Order> findByUserId(@Param("userId") Long userId, Pageable pageable);
+
   // Ventas por cliente con información completa
   @Query("SELECT c.idCliente, c.nombre, c.apellido, COUNT(o), SUM(o.total) " +
       "FROM Order o JOIN o.cliente c " +

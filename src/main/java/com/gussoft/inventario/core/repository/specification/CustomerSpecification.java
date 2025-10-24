@@ -12,8 +12,11 @@ import org.springframework.data.jpa.domain.Specification;
 public class CustomerSpecification {
 
   public static Specification<Customer> findByCustomerId() {
-    return (root, query, cb) ->
-        cb.greaterThan(root.get("idCliente"), 0);
+      return (root, query, cb) ->
+              cb.and(
+                  cb.greaterThan(root.get("idCliente"), 0),
+                  cb.isNull(root.get("userId"))
+              );
   }
 
   public static Specification<Customer> findByName(String name) {
@@ -45,4 +48,5 @@ public class CustomerSpecification {
     return (root, query, cb) ->
         cb.equal(root.get("estado"), status);
   }
+
 }

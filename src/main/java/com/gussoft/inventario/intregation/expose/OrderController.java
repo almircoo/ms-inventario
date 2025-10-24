@@ -8,10 +8,13 @@ import com.gussoft.inventario.intregation.transfer.request.OrderUpdateRequest;
 import com.gussoft.inventario.intregation.transfer.response.OrderResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +36,15 @@ public class OrderController {
   public ResponseEntity<Payload<OrderResponse>> create(@Valid @RequestBody OrderRequest request) {
     OrderResponse response = service.save(request);
     return new ResponseEntity<>(new Payload<>(response), HttpStatus.CREATED);
+  }
+
+  @GetMapping("/pedidos")
+  public ResponseEntity<Payload<Page<OrderResponse>>> getAll(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      Authentication authentication) {
+    Page<OrderResponse> response = service.findAll(page, size, authentication);
+    return ResponseEntity.ok(new Payload<>(response));
   }
 
   @PutMapping("/pedidos/{id}")

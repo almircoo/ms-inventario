@@ -24,6 +24,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -106,6 +109,39 @@ public class OrderServiceImpl implements OrderService {
     Order updatedOrder = repository.save(order);
 
     return OrderMapper.toResponse(updatedOrder);
+  }
+
+  @Override
+  public Page<OrderResponse> findAll(int page, int size, Authentication authentication) {
+    String userRole = authentication.getAuthorities().stream()
+        .map(auth -> auth.getAuthority().replace("ROLE_", ""))
+        .findFirst()
+        .orElse("USER");
+
+    org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+
+    if ("ADMIN".equals(userRole)) {
+      return repository.findAll(pageable)
+          .map(OrderMapper::toResponse);
+    } else {
+      Object principal = authentication.getPrincipal();
+      Long userId = null;
+
+    if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
+        userId = extractUserIdFromAuthentication(authentication);
+    }
+
+    if (userId != null) {
+        return repository.findByUserId(userId, pageable)
+            .map(OrderMapper::toResponse);
+    } else {
+        return Page.empty(pageable);
+    }
+    }
+  }
+
+  private Long extractUserIdFromAuthentication(Authentication authentication) {
+    return null;
   }
 
   private void executeStatusActions(Order order, OrderStatus estadoAnterior, OrderStatus nuevoEstado) {
