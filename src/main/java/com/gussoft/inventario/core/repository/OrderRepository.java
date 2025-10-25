@@ -57,7 +57,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
       "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin " +
       "AND o.estado = 'ENTREGADO' " +
       "GROUP BY c.idCliente, c.nombre, c.apellido, c.email " +
-      "ORDER BY SUM(o.total) DESC")
+      "ORDER BY SUM(o.total) DESC, COUNT(o) DESC")
   Page<CustomerSould> findClientesTop(@Param("fechaInicio") LocalDateTime fechaInicio,
                                       @Param("fechaFin") LocalDateTime fechaFin,
                                       Pageable pageable);
