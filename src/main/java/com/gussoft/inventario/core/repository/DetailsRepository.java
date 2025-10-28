@@ -23,8 +23,8 @@ public interface DetailsRepository extends JpaRepository<Details, Long>, JpaSpec
   @Query("SELECT d FROM Details d WHERE d.pedido.idPedido = :idPedido")
   List<Details> findByPedidoId(@Param("idPedido") Long idPedido);
 
-  // Ventas por producto con información completa
-  @Query("SELECT p.idProducto, p.nombre, p.marca, p.modelo, SUM(d.cantidad) as totalVendido, SUM(d.subtotal) as totalVentas " +
+  @Query("SELECT p.idProducto as idProducto, p.nombre as nombre, p.marca as marca, p.modelo as modelo, " +
+      "SUM(d.cantidad) as totalVendido, SUM(d.subtotal) as totalVentas " +
       "FROM Details d JOIN d.producto p JOIN d.pedido o " +
       "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin " +
       "AND o.estado = 'ENTREGADO' " +
@@ -34,8 +34,8 @@ public interface DetailsRepository extends JpaRepository<Details, Long>, JpaSpec
                                        @Param("fechaFin") LocalDateTime fechaFin,
                                        Pageable pageable);
 
-  // Ventas por categoría
-  @Query("SELECT c.idCategoria as idCategoria, c.nombre as nombre, SUM(d.cantidad) as totalUnidades, SUM(d.subtotal) as totalVentas "
+  @Query("SELECT c.idCategoria as idCategoria, c.nombre as nombre, " +
+      "SUM(d.cantidad) as totalUnidades, SUM(d.subtotal) as totalVentas "
       + "FROM Details d JOIN d.producto p JOIN p.categoria c JOIN d.pedido o "
       + "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin "
       + "AND o.estado = 'ENTREGADO' "
@@ -45,8 +45,8 @@ public interface DetailsRepository extends JpaRepository<Details, Long>, JpaSpec
                                              @Param("fechaFin") LocalDateTime fechaFin,
                                              Pageable pageable);
 
-  // Productos más vendidos
-  @Query("SELECT p.idProducto, p.nombre, p.marca, p.modelo, SUM(d.cantidad) as totalVendido " +
+  @Query("SELECT p.idProducto as idProducto, p.nombre as nombre, p.marca as marca, p.modelo as modelo, " +
+      "SUM(d.cantidad) as totalVendido " +
       "FROM Details d JOIN d.producto p JOIN d.pedido o " +
       "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin " +
       "AND o.estado = 'ENTREGADO' " +

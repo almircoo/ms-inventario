@@ -21,8 +21,8 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
   @Query("SELECT o FROM Order o JOIN o.cliente c WHERE c.userId = :userId")
   Page<Order> findByUserId(@Param("userId") Long userId, Pageable pageable);
 
-  // Ventas por cliente con información completa
-  @Query("SELECT c.idCliente, c.nombre as nombre, c.apellido as apellido, COUNT(o) as totalPedidos, SUM(o.total) as montoTotal " +
+  @Query("SELECT c.idCliente as idCliente, c.nombre as nombre, c.apellido as apellido, " +
+      "COUNT(o) as totalPedidos, SUM(o.total) as montoTotal " +
       "FROM Order o JOIN o.cliente c " +
       "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin " +
       "AND o.estado = 'ENTREGADO' " +
@@ -31,8 +31,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
                                       @Param("fechaFin") LocalDateTime fechaFin,
                                       Pageable pageable);
 
-  // Clientes más frecuentes
-  @Query("SELECT c.idCliente, c.nombre, c.apellido, c.email, "
+  @Query("SELECT c.idCliente as idCliente, c.nombre as nombre, c.apellido as apellido, c.email as email, "
       + "COUNT(o.idPedido) as totalPedidos, "
       + "SUM(o.total) as totalGastado "
       + "FROM Order o JOIN o.cliente c "
@@ -44,8 +43,8 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
                                            @Param("fechaFin") LocalDateTime fechaFin,
                                            Pageable pageable);
 
-  // Clientes con mejor compra
-  @Query("SELECT c.idCliente, c.nombre, c.apellido, MAX(o.total) as mejorCompra " +
+  @Query("SELECT c.idCliente as idCliente, c.nombre as nombre, c.apellido as apellido, " +
+      "MAX(o.total) as mejorCompra " +
       "FROM Order o JOIN o.cliente c " +
       "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin " +
       "AND o.estado = 'ENTREGADO' " +

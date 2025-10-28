@@ -16,20 +16,22 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
   // Productos con stock bajo
-  @Query("SELECT p.idProducto, p.nombre, p.marca, p.modelo, p.stock, p.precio, c.nombre as categoria " +
+  @Query("SELECT p.idProducto as idProducto, p.nombre as nombre, p.marca as marca, p.modelo as modelo, " +
+      "p.stock as stock, p.precio as precio, c.nombre as categoria " +
       "FROM Product p JOIN p.categoria c " +
       "WHERE p.stock <= :stockMinimo AND p.estado = true " +
       "ORDER BY p.stock ASC")
   Page<IProductStock> findProductosStockBajo(@Param("stockMinimo") Integer stockMinimo, Pageable pageable);
 
   // Productos sin stock
-  @Query("SELECT p.idProducto, p.nombre, p.marca, p.modelo, p.stock, p.precio " +
-      "FROM Product p " +
+  @Query("SELECT p.idProducto as idProducto, p.nombre as nombre, p.marca as marca, p.modelo as modelo, " +
+      "p.stock as stock, p.precio as precio, c.nombre as categoria " +
+      "FROM Product p JOIN p.categoria c " +
       "WHERE p.stock = 0 AND p.estado = true")
   Page<IProductStock> findProductosSinStock(Pageable pageable);
 
   // Productos por categoría
-  @Query("SELECT p.idProducto, p.nombre, p.precio, p.stock, p.marca " +
+  @Query("SELECT p.idProducto as idProducto, p.nombre as nombre, p.precio as precio, p.stock as stock, p.marca as marca " +
       "FROM Product p JOIN p.categoria c " +
       "WHERE c.idCategoria = :categoriaId AND p.estado = true")
   Page<Object[]> findProductosPorCategoria(@Param("categoriaId") Long categoriaId, Pageable pageable);

@@ -1,10 +1,12 @@
 package com.gussoft.inventario.intregation.transfer.record;
 
+import java.math.BigDecimal;
+
 public interface ICategoriaVenta {
 
   Long getIdCategoria();
   String getNombre();
-  String getTotalUnidades();
-  String getTotalVentas();
+  Long getTotalUnidades();
+  BigDecimal getTotalVentas();
 
 }
