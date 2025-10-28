@@ -89,37 +89,43 @@ public class ReportServiceImpl implements ReportService {
   }
 
   @Override
-  public Page<Object[]> reporteVentasPorProducto(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+  public Page<OrderResponse> buscarPedidosPorDni(String dni, OrderStatus estado, LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+    return orderRepository.findByClienteDniWithFilters(dni, estado, fechaInicio, fechaFin, pageable)
+    .map(OrderMapper::toResponse);
+  }
+
+  @Override
+  public Page<VentasProductos> reporteVentasPorProducto(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
     return detailsRepository.findVentasPorProducto(fechaInicio, fechaFin, pageable);
   }
 
   @Override
-  public Page<IProductStock> reporteVentasPorCategoria(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+  public Page<ICategoriaVenta> reporteVentasPorCategoria(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
     return detailsRepository.findVentasPorCategoria(fechaInicio, fechaFin, pageable);
   }
 
   @Override
-  public Page<Object[]> reporteVentasPorCliente(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+  public Page<ReporteCliente> reporteVentasPorCliente(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
     return orderRepository.findVentasPorCliente(fechaInicio, fechaFin, pageable);
   }
 
   @Override
-  public Page<ProductStock> reporteProductosMasVendidos(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+  public Page<IProductoHot> reporteProductosMasVendidos(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
     return detailsRepository.findProductosMasVendidos(fechaInicio, fechaFin, pageable);
   }
 
   @Override
-  public Page<Object[]> reporteProductosStockBajo(Integer stockMinimo, Pageable pageable) {
+  public Page<IProductStock> reporteProductosStockBajo(Integer stockMinimo, Pageable pageable) {
     return productRepository.findProductosStockBajo(stockMinimo, pageable);
   }
 
   @Override
-  public Page<Object[]> reporteClientesMasFrecuentes(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+  public Page<ClientesFrecuentes> reporteClientesMasFrecuentes(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
     return orderRepository.findClientesMasFrecuentes(fechaInicio, fechaFin, pageable);
   }
 
   @Override
-  public Page<Object[]> reporteClientesMejorCompra(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
+  public Page<ClientesMoreBuy> reporteClientesMejorCompra(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
     return orderRepository.findClientesMejorCompra(fechaInicio, fechaFin, pageable);
   }
 
