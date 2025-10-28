@@ -93,8 +93,7 @@ public class ReportController {
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
 
-    Pageable pageable = PageRequest.of(page, size,
-        Sort.by(Sort.Direction.DESC, "totalGastado"));
+    Pageable pageable = PageRequest.of(page, size);
 
     Page<ReporteCliente> reporte = reporteService.reporteVentasPorCliente(fechaInicio, fechaFin, pageable);
     return ResponseEntity.ok(reporte);
@@ -162,8 +161,7 @@ public class ReportController {
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
 
-    Pageable pageable = PageRequest.of(page, size,
-        Sort.by(Sort.Direction.DESC, "totalGastado"));
+    Pageable pageable = PageRequest.of(page, size);
 
     Page<CustomerSould> reporte = reporteService.reporteClientesTop(fechaInicio, fechaFin, pageable);
     return ResponseEntity.ok(reporte);
