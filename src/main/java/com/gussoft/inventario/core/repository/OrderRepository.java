@@ -18,12 +18,12 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
   Page<Order> findByUserId(@Param("userId") Long userId, Pageable pageable);
 
   // Ventas por cliente con información completa
-  @Query("SELECT c.idCliente, c.nombre, c.apellido, COUNT(o), SUM(o.total) " +
+  @Query("SELECT c.idCliente, c.nombre as nombre, c.apellido as apellido, COUNT(o) as totalPedidos, SUM(o.total) as montoTotal" +
       "FROM Order o JOIN o.cliente c " +
       "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin " +
       "AND o.estado = 'ENTREGADO' " +
       "GROUP BY c.idCliente, c.nombre, c.apellido")
-  Page<Object[]> findVentasPorCliente(@Param("fechaInicio") LocalDateTime fechaInicio,
+  Page<ReporteCliente> findVentasPorCliente(@Param("fechaInicio") LocalDateTime fechaInicio,
                                       @Param("fechaFin") LocalDateTime fechaFin,
                                       Pageable pageable);
 
@@ -36,7 +36,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
       + "AND o.estado = 'ENTREGADO' "
       + "GROUP BY c.idCliente, c.nombre, c.apellido, c.email "
       + "ORDER BY totalPedidos DESC, totalGastado DESC")
-  Page<Object[]> findClientesMasFrecuentes(@Param("fechaInicio") LocalDateTime fechaInicio,
+  Page<ClientesFrecuentes> findClientesMasFrecuentes(@Param("fechaInicio") LocalDateTime fechaInicio,
                                            @Param("fechaFin") LocalDateTime fechaFin,
                                            Pageable pageable);
 
@@ -47,7 +47,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
       "AND o.estado = 'ENTREGADO' " +
       "GROUP BY c.idCliente, c.nombre, c.apellido " +
       "ORDER BY mejorCompra DESC")
-  Page<Object[]> findClientesMejorCompra(@Param("fechaInicio") LocalDateTime fechaInicio,
+  Page<ClientesMoreBuy> findClientesMejorCompra(@Param("fechaInicio") LocalDateTime fechaInicio,
                                          @Param("fechaFin") LocalDateTime fechaFin,
                                          Pageable pageable);
 
@@ -61,4 +61,15 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
   Page<CustomerSould> findClientesTop(@Param("fechaInicio") LocalDateTime fechaInicio,
                                       @Param("fechaFin") LocalDateTime fechaFin,
                                       Pageable pageable);
+
+  @Query("SELECT o FROM Order o JOIN o.cliente c WHERE " +
+        "c.dni = :dni " +
+        "AND (:estado IS NULL OR o.estado = :estado) " +
+        "AND (:fechaInicio IS NULL OR o.fechaPedido >= :fechaInicio) " +
+        "AND (:fechaFin IS NULL OR o.fechaPedido <= :fechaFin)")
+    Page<Order> findByClienteDniWithFilters(@Param("dni") String dni,
+                                            @Param("estado") OrderStatus estado,
+                                            @Param("fechaInicio") LocalDateTime fechaInicio,
+                                            @Param("fechaFin") LocalDateTime fechaFin,
+                                            Pageable pageable);
 }
