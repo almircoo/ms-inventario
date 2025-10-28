@@ -19,9 +19,9 @@ import org.springframework.data.domain.Pageable;
 public interface ReportService {
 
   ReportResponse generarReporteVentasPorPeriodo(LocalDateTime fechaInicio, LocalDateTime fechaFin);
-  Page<VentasProducto> reporteVentasPorProducto(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
-  Page<VentasCategoria> reporteVentasPorCategoria(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
-  Page<reporteCliente> reporteVentasPorCliente(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
+  Page<VentasProductos> reporteVentasPorProducto(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
+  Page<ICategoriaVenta> reporteVentasPorCategoria(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
+  Page<ReporteCliente> reporteVentasPorCliente(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
 
   // Reportes de Productos
   Page<IProductHot> reporteProductosMasVendidos(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);

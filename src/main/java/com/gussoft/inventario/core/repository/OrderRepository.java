@@ -1,8 +1,12 @@
 package com.gussoft.inventario.core.repository;
 
 import com.gussoft.inventario.core.models.Order;
-import java.time.LocalDateTime;
+import com.gussoft.inventario.core.models.OrderStatus;
+import com.gussoft.inventario.intregation.transfer.record.ClientesFrecuentes;
+import com.gussoft.inventario.intregation.transfer.record.ClientesMoreBuy;
 import com.gussoft.inventario.intregation.transfer.record.CustomerSould;
+import com.gussoft.inventario.intregation.transfer.response.ReporteCliente;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,11 +22,11 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
   Page<Order> findByUserId(@Param("userId") Long userId, Pageable pageable);
 
   // Ventas por cliente con información completa
-  @Query("SELECT c.idCliente, c.nombre as nombre, c.apellido as apellido, COUNT(o) as totalPedidos, SUM(o.total) as montoTotal" +
+  @Query("SELECT c.idCliente, c.nombre as nombre, c.apellido as apellido, COUNT(o) as totalPedidos, SUM(o.total) as montoTotal " +
       "FROM Order o JOIN o.cliente c " +
       "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin " +
       "AND o.estado = 'ENTREGADO' " +
-      "GROUP BY c.idCliente, c.nombre, c.apellido")
+      "GROUP BY c.idCliente, c.nombre, c.apellido ")
   Page<ReporteCliente> findVentasPorCliente(@Param("fechaInicio") LocalDateTime fechaInicio,
                                       @Param("fechaFin") LocalDateTime fechaFin,
                                       Pageable pageable);
@@ -51,16 +55,16 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
                                          @Param("fechaFin") LocalDateTime fechaFin,
                                          Pageable pageable);
 
-  @Query("SELECT new com.gussoft.inventario.intregation.transfer.record.CustomerSould(" +
-      "c.idCliente, c.nombre, c.apellido, c.email, COUNT(o), SUM(o.total)) " +
-      "FROM Order o JOIN o.cliente c " +
-      "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin " +
-      "AND o.estado = 'ENTREGADO' " +
-      "GROUP BY c.idCliente, c.nombre, c.apellido, c.email " +
-      "ORDER BY SUM(o.total) DESC, COUNT(o) DESC")
-  Page<CustomerSould> findClientesTop(@Param("fechaInicio") LocalDateTime fechaInicio,
-                                      @Param("fechaFin") LocalDateTime fechaFin,
-                                      Pageable pageable);
+  @Query("SELECT c.idCliente as idCliente, c.nombre as nombre, c.apellido as apellido, c.email as email, "
+	      + "COUNT(o) as totalPedidos, SUM(o.total) as totalGastado "
+	      + "FROM Order o JOIN o.cliente c "
+	      + "WHERE o.fechaPedido BETWEEN :fechaInicio AND :fechaFin "
+	      + "AND o.estado = 'ENTREGADO' "
+	      + "GROUP BY c.idCliente, c.nombre, c.apellido, c.email "
+	      + "ORDER BY SUM(o.total) DESC")
+	  Page<CustomerSould> findClientesTop(@Param("fechaInicio") LocalDateTime fechaInicio,
+	                                      @Param("fechaFin") LocalDateTime fechaFin,
+	                                      Pageable pageable);
 
   @Query("SELECT o FROM Order o JOIN o.cliente c WHERE " +
         "c.dni = :dni " +

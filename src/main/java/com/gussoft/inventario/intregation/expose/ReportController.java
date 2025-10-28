@@ -57,7 +57,7 @@ public class ReportController {
   }
 
   @GetMapping("/ventas/producto")
-  public ResponseEntity<Page<VentasProductos> reporteVentasPorProducto(
+  public ResponseEntity<Page<VentasProductos>> reporteVentasPorProducto(
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
       @RequestParam(defaultValue = "0") int page,
